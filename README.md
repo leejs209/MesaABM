@@ -1,4 +1,5 @@
 # MesaABM
-Modelling the novel coronavirus in the context of high school opening.
+
+Modelling the spread of COVID-19 in Korean schools.
 
 Created using [Mesa](https://mesa.readthedocs.io/)
