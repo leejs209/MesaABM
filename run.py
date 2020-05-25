@@ -1,4 +1,3 @@
-
 from mesa.visualization.ModularVisualization import ModularServer
 from MesaABM.model import SchoolModel
 from MesaABM.visualization import grid
