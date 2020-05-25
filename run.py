@@ -1,6 +1,12 @@
-import MesaABM.model as model
 
-my_model = model.SchoolModel(100, 14, 100, 100)
+from mesa.visualization.ModularVisualization import ModularServer
+from MesaABM.model import SchoolModel
+from MesaABM.visualization import grid
 
-for _ in range(10):
-    my_model.step()
+
+server = ModularServer(SchoolModel,
+                       [grid],
+                       "School Model",
+                       {"N": 100, "group_N": 10, "width": 50, "height": 50, "initial_num_infected": 1})
+server.port = 8080
+server.launch()
