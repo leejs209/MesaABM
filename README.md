@@ -1,2 +1,5 @@
 # MesaABM
-Agent-based modelling the spread of novel coronavirus in high schools using `mesa` and `matplotlib`(to represent the data).
+
+Modelling the spread of COVID-19 in Korean schools.
+
+Created using [Mesa](https://mesa.readthedocs.io/)
