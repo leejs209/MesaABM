@@ -16,12 +16,16 @@ def agent_portrayal(agent):
     if agent.status == "S":
         portrayal["Color"] = "blue"
         portrayal["Layer"] = 0
-    else:
+    elif agent.status == "I":
         portrayal["Color"] = "red"
+        portrayal["Layer"] = 1
+    else:
+        portrayal["Color"] = "green"
         portrayal["Layer"] = 1
 
     return portrayal
 
+# TODO: add charts for showing graph of the number of each status of agents.
 
 # CanvasGrid(portrayal_method, grid_width, grid_height, canvas_width=500(px), canvas_height=500(px) )
 grid = CanvasGrid(agent_portrayal, 50, 50, 500, 500)
