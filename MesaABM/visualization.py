@@ -35,4 +35,4 @@ s_chart = ChartModule([{"Label": "Susceptible", "Color": "Blue"},
                       data_collector_name='datacollector')
 
 # CanvasGrid(portrayal_method, grid_width, grid_height, canvas_width=500(px), canvas_height=500(px) )
-grid = CanvasGrid(agent_portrayal, 100, 100, 500, 500)
+grid = CanvasGrid(agent_portrayal, 50, 50, 500, 500)
