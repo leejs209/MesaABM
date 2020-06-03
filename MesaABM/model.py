@@ -1,7 +1,32 @@
 from mesa import Agent, Model
 from mesa.time import RandomActivation
 from mesa.space import MultiGrid, ContinuousSpace
-import random
+from mesa.datacollection import DataCollector
+
+
+def s_count(model):
+    cnt = 0
+    for agent in model.schedule.agents:
+        if agent.status == "S":
+            cnt += 1
+    return cnt
+
+
+def i_count(model):
+    cnt = 0
+    for agent in model.schedule.agents:
+        if agent.status == "I":
+            cnt += 1
+    return cnt
+
+
+def r_count(model):
+    cnt = 0
+    for agent in model.schedule.agents:
+        if agent.status == "R":
+            cnt += 1
+    return cnt
+
 
 
 class Student(Agent):
@@ -48,7 +73,7 @@ class Student(Agent):
 class SchoolModel(Model):
     def __init__(self, N, group_N, width, height, initial_num_infected, infection_duration, *args, **kwargs):
         """ Constructor Function - Takes the number of population(N), and the number of classes(group_N)."""
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.num_agents = N
         self.group_N = group_N
         self.infection_duration = infection_duration
@@ -68,6 +93,12 @@ class SchoolModel(Model):
             y = self.random.randrange(self.grid.height)
             self.grid.place_agent(a, (x, y))
 
+        self.datacollector = DataCollector(
+            model_reporters={"Susceptible": s_count, "Infected": i_count, "Recovered": r_count},
+            agent_reporters={}
+        )
+
     def step(self):
         """ Advance the model by one step."""
+        self.datacollector.collect(self)
         self.schedule.step()
