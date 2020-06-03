@@ -9,6 +9,3 @@ server = ModularServer(SchoolModel,
                         "initial_num_infected": 1, "infection_duration": 30})
 server.port = 8080
 server.launch()
-
-gini = model.datacollector.get_model_vars_dataframe()
-gini.plot()
