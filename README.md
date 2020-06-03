@@ -1,5 +1,6 @@
 # MesaABM
 ![image](sir_basic_sim.gif)
+
 Modelling the spread of COVID-19 in Korean schools.
 Created using [Mesa](https://mesa.readthedocs.io/)
 
