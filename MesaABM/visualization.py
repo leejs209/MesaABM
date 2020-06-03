@@ -28,9 +28,9 @@ def agent_portrayal(agent):
 
 
 # TODO: add charts for showing graph of the number of each status of agents.
-s_chart = ChartModule([{"Label": "Susceptible","Color": "Blue"},
-                       {"Label": "Infected","Color": "Red"},
-                       {"Label": "Recovered","Color": "Green"}
+s_chart = ChartModule([{"Label": "Susceptible", "Color": "Blue"},
+                       {"Label": "Infected", "Color": "Red"},
+                       {"Label": "Recovered", "Color": "Green"}
                        ],
                       data_collector_name='datacollector')
 
