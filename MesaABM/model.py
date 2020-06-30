@@ -35,24 +35,17 @@ class Student(Agent):
     def __init__(self, unique_id, group_no, status, infection_duration, model):
         super().__init__(unique_id, model)
         self.group_no = group_no
-        # the speed of agent
-        self.dx = 0
-        self.dy = 0
         self.status = status
         self.infected_timeleft = infection_duration
         self.infection_duration = infection_duration
 
-    def step(self):
-
-        # x, y = self.pos
-        # self.dx = random.randint(-1, 1)
-        # self.dy = random.randint(-1, 1)
-        # new_pos = x + self.dx, y + self.dy
-
+    def move_random(self):
         possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False, radius=1)
         new_pos = self.random.choice(possible_steps)
         self.model.grid.move_agent(self, new_pos)
 
+    def step(self):
+        self.move_random()
         if self.status == "I":
             self.spread_infection()
             if self.infected_timeleft > 0:
@@ -71,18 +64,25 @@ class Student(Agent):
 
 
 class SchoolModel(Model):
-    def __init__(self, N, group_N, width, height, initial_num_infected, infection_duration, *args, **kwargs):
+    def __init__(self, N, N_per_group, width, height, initial_num_infected,
+                 infection_duration, infection_prob_per_contact, restaurant_multiplier, visit_prob_per_person,
+                 ):
         """ Constructor Function - Takes the number of population(N), and the number of classes(group_N)."""
         super().__init__()
-        self.num_agents = N
-        self.group_N = group_N
+
+        self.N = N
+        self.N_per_group = N_per_group
         self.infection_duration = infection_duration
+        self.infection_prob_per_contact = infection_prob_per_contact
+        self.restaurant_multiplier = restaurant_multiplier
+        self.visit_prob_per_person = visit_prob_per_person
+
         # self.grid = ContinuousSpace(width, height, True)
         self.grid = MultiGrid(width, height, False)
         self.schedule = RandomActivation(self)
-        for t in range(self.num_agents):
-            # Student(N, group_N, status, infection_duration)
-            a = Student(t, t % group_N, "S", self.infection_duration, self)
+        for t in range(0, self.N):
+            # (self, unique_id, group_no, status, infection_duration, model)
+            a = Student(t+1, t // N_per_group + 1, "S", self.infection_duration, self)
             if initial_num_infected > 0:
                 a.status = "I"
                 initial_num_infected -= 1
