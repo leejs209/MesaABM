@@ -38,6 +38,15 @@ class Student(Agent):
         self.infected_timeleft = infection_duration
         self.infection_duration = infection_duration
 
+    def meal_normal(self):
+        k = ((self.unique_id - 1) // 5) % 46
+        if k % 2 == 0:
+            xpos = k *3/2 + 1
+        else:
+            xpos = (k * 3 + 1) / 2
+        ypos = (self.unique_id - 1) % 5 + 31 + 6 * ((self.unique_id - 1) // 460)
+        self.model.grid.move_agent(self,(int(xpos),ypos))
+
     def move_to_group(self, group_no):
         x1 = ((group_no - 1) % 14) * 10 + 1
         x2 = x1 + 8
@@ -65,11 +74,13 @@ class Student(Agent):
             if x1 <= x[0] <= x2 and y1 <= x[1] <= y2:
                 bounded_steps.append(x)
 
+        if len(bounded_steps) == 0:
+            return
 
         new_pos = self.random.choice(bounded_steps)
         self.model.grid.move_agent(self, new_pos)
 
-    def spread_infection(self):
+    def spread_infection(self, multiplier):
         # Spread infection only when self is Infected
         if self.status != "I":
             return
@@ -78,7 +89,7 @@ class Student(Agent):
             return
         for x in cellmates:
             if x.status == "S":
-                if self.random.random() <= self.model.infection_prob_per_contact:
+                if self.random.random() <= self.model.infection_prob_per_contact * multiplier:
                     x.status = "I"
 
     def recovery_countdown(self):
@@ -91,17 +102,24 @@ class Student(Agent):
             self.infected_timeleft = self.infection_duration
 
     def step(self):
+        if self.model.step_no % 5 == 0:
+            self.meal_normal()
+            self.spread_infection(self.model.restaurant_multiplier)
+        else:
+            self.move_to_group(self.group_no)
+            self.spread_infection(1)
         self.move_within_bound(group_no=self.group_no)
         self.recovery_countdown()
-        self.spread_infection()
+
+
 
 class SchoolModel(Model):
     def __init__(self, N, N_per_group, width, height, initial_num_infected,
-                 infection_duration, infection_prob_per_contact, restaurant_multiplier, visit_prob_per_person,
+                 infection_duration, infection_prob_per_contact, restaurant_multiplier, visit_prob_per_person
                  ):
 
         super().__init__()
-
+        self.step_no = 1
         self.N = N
         self.N_per_group = N_per_group
         self.infection_duration = infection_duration
@@ -141,5 +159,6 @@ class SchoolModel(Model):
 
     def step(self):
         """ Advance the model by one step."""
+        self.step_no += 1
         self.datacollector.collect(self)
         self.schedule.step()
