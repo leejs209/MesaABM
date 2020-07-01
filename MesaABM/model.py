@@ -28,9 +28,8 @@ def r_count(model):
     return cnt
 
 
-
 class Student(Agent):
-    """ A Student that moves depending on the time, space, and other studnets"""
+    """ A Student that moves depending on the time, space, and other students"""
 
     def __init__(self, unique_id, group_no, status, infection_duration, model):
         super().__init__(unique_id, model)
@@ -39,35 +38,68 @@ class Student(Agent):
         self.infected_timeleft = infection_duration
         self.infection_duration = infection_duration
 
-    def move_random(self):
-        possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False, radius=1)
-        new_pos = self.random.choice(possible_steps)
+    def move_to_group(self, group_no):
+        x1 = ((group_no - 1) % 14) * 10 + 1
+        x2 = x1 + 8
+
+        y1 = ((group_no - 1) // 14) * 10 + 1
+        y2 = y1 + 8
+
+        new_pos = (self.random.randint(x1, x2), self.random.randint(y1, y2))
         self.model.grid.move_agent(self, new_pos)
 
-    def step(self):
-        self.move_random()
-        if self.status == "I":
-            self.spread_infection()
-            if self.infected_timeleft > 0:
-                self.infected_timeleft -= 1
-            else:
-                self.status = "R"
-                self.infected_timeleft = self.infection_duration
+    def move_within_bound(self, group_no):
+        x1 = ((group_no - 1) % 14) * 10 + 1
+        x2 = x1 + 8
+
+        y1 = ((group_no - 1) // 14) * 10 + 1
+        y2 = y1 + 8
+
+        #if not x1 <= self.pos[0] <= x2 or not y1 <= self.pos[1] <= y2:
+        #    print("Agent is told to move in group's bound without being in it first.", x1, self.pos[0], x2, y1, self.pos[1], y2)
+
+        possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False, radius=1)
+
+        bounded_steps = []
+        for x in possible_steps:
+            if x1 <= x[0] <= x2 and y1 <= x[1] <= y2:
+                bounded_steps.append(x)
+
+
+        new_pos = self.random.choice(bounded_steps)
+        self.model.grid.move_agent(self, new_pos)
 
     def spread_infection(self):
-        """ This function is called if agent is Infected """
+        # Spread infection only when self is Infected
+        if self.status != "I":
+            return
         cellmates = self.model.grid.get_cell_list_contents([self.pos])
-        if len(cellmates) > 1:
-            other = self.random.choice(cellmates)
-            if other.status == "S":
-                other.status = "I"
+        if len(cellmates) <= 1:
+            return
+        for x in cellmates:
+            if x.status == "S":
+                if self.random.random() <= self.model.infection_prob_per_contact:
+                    x.status = "I"
 
+    def recovery_countdown(self):
+        if self.status != "I":
+            return
+        if self.infected_timeleft > 0:
+            self.infected_timeleft -= 1
+        else:
+            self.status = "R"
+            self.infected_timeleft = self.infection_duration
+
+    def step(self):
+        self.move_within_bound(group_no=self.group_no)
+        self.recovery_countdown()
+        self.spread_infection()
 
 class SchoolModel(Model):
     def __init__(self, N, N_per_group, width, height, initial_num_infected,
                  infection_duration, infection_prob_per_contact, restaurant_multiplier, visit_prob_per_person,
                  ):
-        """ Constructor Function - Takes the number of population(N), and the number of classes(group_N)."""
+
         super().__init__()
 
         self.N = N
@@ -80,18 +112,27 @@ class SchoolModel(Model):
         # self.grid = ContinuousSpace(width, height, True)
         self.grid = MultiGrid(width, height, False)
         self.schedule = RandomActivation(self)
+
+        initial_infected = [self.random.randrange(0, self.N) for _ in range(initial_num_infected)]
+
         for t in range(0, self.N):
             # (self, unique_id, group_no, status, infection_duration, model)
-            a = Student(t+1, t // N_per_group + 1, "S", self.infection_duration, self)
-            if initial_num_infected > 0:
+            group_no = t // N_per_group + 1
+
+            x1 = ((group_no - 1) % 14) * 10 + 1
+            x2 = x1 + 8
+
+            y1 = ((group_no - 1) // 14) * 10 + 1
+            y2 = y1 + 8
+
+            a = Student(t + 1, group_no, "S", self.infection_duration, self)
+
+            if t in initial_infected:
                 a.status = "I"
-                initial_num_infected -= 1
 
             self.schedule.add(a)
 
-            x = self.random.randrange(self.grid.width)
-            y = self.random.randrange(self.grid.height)
-            self.grid.place_agent(a, (x, y))
+            self.grid.place_agent(a, (self.random.randint(x1, x2), self.random.randint(y1, y2)))
 
         self.datacollector = DataCollector(
             model_reporters={"Susceptible": s_count, "Infected": i_count, "Recovered": r_count},
