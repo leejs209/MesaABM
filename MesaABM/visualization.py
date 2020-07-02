@@ -16,13 +16,13 @@ def agent_portrayal(agent):
 
     if agent.status == "S":
         portrayal["Color"] = "blue"
-        portrayal["Layer"] = 0
+        portrayal["Layer"] = agent.unique_id
     elif agent.status == "I":
         portrayal["Color"] = "red"
-        portrayal["Layer"] = 1
+        portrayal["Layer"] = agent.unique_id
     else:
         portrayal["Color"] = "green"
-        portrayal["Layer"] = 1
+        portrayal["Layer"] = agent.unique_id
 
     return portrayal
 
@@ -35,4 +35,4 @@ s_chart = ChartModule([{"Label": "Susceptible", "Color": "Blue"},
                       data_collector_name='datacollector')
 
 # CanvasGrid(portrayal_method, grid_width, grid_height, canvas_width=500(px), canvas_height=500(px) )
-grid = CanvasGrid(agent_portrayal, 140, 60, 1400, 600)
+grid = CanvasGrid(agent_portrayal, 140, 61, 1400, 610)

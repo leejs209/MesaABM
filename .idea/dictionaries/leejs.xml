@@ -2,6 +2,8 @@
   <dictionary name="leejs">
     <words>
       <w>datacollector</w>
+      <w>xpos</w>
+      <w>ypos</w>
     </words>
   </dictionary>
 </component>
