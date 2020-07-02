@@ -57,8 +57,8 @@ server = ModularServer(SchoolModel,
                         "initial_num_infected": 1, "infection_duration": 7,  "exposed_duration": 5,
                         "infection_prob_per_contact": 0.2, "exposed_infection_prob_per_contact": 0.1,
                         "restaurant_multiplier": 3, "visit_prob_per_person": 0.1,
-                        "meal_random": True, "meal_distanced": False, "dinner_percentage": 0.3,
-                        "timetable": timetable_extra, "split_opening": False})
+                        "meal_random": False, "meal_distanced": False, "dinner_percentage": 0.3,
+                        "timetable": timetable_normal, "split_opening": False})
 
-server.port = 8081
+server.port = 8082
 server.launch()

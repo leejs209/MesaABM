@@ -35,6 +35,8 @@ def e_count(model):
             cnt += 1
     return cnt
 
+def affected(model):
+    return model.N - s_count(model)
 
 class Student(Agent):
     """ A Student that moves depending on the time, space, and other students"""
@@ -268,7 +270,10 @@ class SchoolModel(Model):
         self.grid = MultiGrid(width, height, False)
         self.schedule = RandomActivation(self)
 
-        initial_infected = [self.random.randrange(0, self.N) for _ in range(initial_num_infected)]
+        if self.split_opening:
+            initial_infected = [self.random.randrange(14*25, self.N) for _ in range(initial_num_infected)]
+        else:
+            initial_infected = [self.random.randrange(0, self.N) for _ in range(initial_num_infected)]
 
         for t in range(0, self.N):
             # (self, unique_id, group_no, status, infection_duration, model)
@@ -294,6 +299,11 @@ class SchoolModel(Model):
 
         self.datacollector = DataCollector(
             model_reporters={"Susceptible": s_count, "Infected": i_count, "Recovered": r_count, "Exposed": e_count},
+            agent_reporters={}
+        )
+
+        self.affected_collector = DataCollector(
+            model_reporters={"Affected": affected},
             agent_reporters={}
         )
 

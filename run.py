@@ -51,6 +51,7 @@ timetable_extra = timetable_normal + [
 ]
 
 
+
 def do_experiment(EXPERIMENT_NAME, split_opening, extra_school, visit_prob_per_person, meal_random):
     timetable = timetable_normal
     if extra_school:
@@ -67,12 +68,14 @@ def do_experiment(EXPERIMENT_NAME, split_opening, extra_school, visit_prob_per_p
     while model.i_count != 0 or model.e_count != 0:
         model.step()
     asdf = str(datetime.datetime.now().strftime('%m-%d %H-%M-%S'))
-    result = model.datacollector.get_model_vars_dataframe()
 
+    result = model.datacollector.get_model_vars_dataframe()
     result.plot()
     plt.xlim(0, 2000)
     plt.savefig('result/' + EXPERIMENT_NAME + asdf + '.png', bbox_inches='tight')
-    result.to_csv('result/csv/' + EXPERIMENT_NAME + asdf + '.csv')
+    plt.close()
+
+    result.to_csv('result/csv/' + EXPERIMENT_NAME + '/' + EXPERIMENT_NAME + asdf + '.csv')
 
     r = '\n'
     for x in range(4):
@@ -90,13 +93,13 @@ def do_experiment(EXPERIMENT_NAME, split_opening, extra_school, visit_prob_per_p
 
 
 # do_experiment(EXPERIMENT_NAME, split_opening, extra_school, visit_prob_per_person, meal_random):
-for _ in range(10):
-    do_experiment('대조군', False, False, 0.1, True)
+for _ in range(1000):
+    #do_experiment('대조군', False, False, 0.1, True)
 #for _ in range(5):
     do_experiment('가설1번', True, False, 0.1, True)
 #for _ in range(5):
-    do_experiment('가설2번', False, True, 0.1, True)
+    #do_experiment('가설2번', False, True, 0.1, True)
 #for _ in range(0):
-    do_experiment('가설3번', False, False, 0, True)
+    #do_experiment('가설3번', False, False, 0, True)
 #for _ in range(0):
-    do_experiment('가설4번', False, False, 0.1, False)
+    #do_experiment('가설4번', False, False, 0.1, False)
