@@ -28,6 +28,13 @@ def r_count(model):
             cnt += 1
     return cnt
 
+def e_count(model):
+    cnt = 0
+    for agent in model.schedule.agents:
+        if agent.status == "E":
+            cnt += 1
+    return cnt
+
 
 class Student(Agent):
     """ A Student that moves depending on the time, space, and other students"""
@@ -39,6 +46,7 @@ class Student(Agent):
         self.status = status
         self.infected_timeleft = infection_duration
         self.infection_duration = infection_duration
+        self.exposed_timeleft = self.model.exposed_duration
         self.dinner = dinner
 
     def meal_normal(self):
@@ -112,22 +120,28 @@ class Student(Agent):
         # Spread infection only when self is Infected
         if self.status != "I":
             return
+
         cellmates = self.model.grid.get_cell_list_contents([self.pos])
         if len(cellmates) <= 1:
             return
         for x in cellmates:
-            if x.status == "S":
-                if self.random.random() <= self.model.infection_prob_per_contact * multiplier:
-                    x.status = "I"
+            if x.status == "S" and self.random.random() <= self.model.infection_prob_per_contact * multiplier:
+                x.status = "E"
 
     def recovery_countdown(self):
-        if self.status != "I":
-            return
-        if self.infected_timeleft > 0:
-            self.infected_timeleft -= 1
-        else:
-            self.status = "R"
-            self.infected_timeleft = self.infection_duration
+        if self.status == "E":
+            if self.exposed_timeleft > 0:
+                self.exposed_timeleft -= 1
+            else:
+                self.status = "I"
+                self.exposed_timeleft = self.model.exposed_duration
+
+        if self.status == "I":
+            if self.infected_timeleft > 0:
+                self.infected_timeleft -= 1
+            else:
+                self.status = "R"
+                self.infected_timeleft = self.infection_duration
 
 
 
@@ -212,7 +226,7 @@ class Student(Agent):
 
 class SchoolModel(Model):
     def __init__(self, N, N_per_group, width, height, initial_num_infected,
-                 infection_duration, infection_prob_per_contact, restaurant_multiplier, visit_prob_per_person,
+                 infection_duration, exposed_duration, infection_prob_per_contact, restaurant_multiplier, visit_prob_per_person,
                  meal_random, meal_distanced, timetable, dinner_percentage, split_opening
                  ):
 
@@ -220,13 +234,14 @@ class SchoolModel(Model):
         self.step_no = 0
         self.N = N
         self.N_per_group = N_per_group
-        self.infection_duration = infection_duration
+        self.timetable = timetable
+        self.infection_duration = infection_duration * len(self.timetable)
+        self.exposed_duration = exposed_duration * len(self.timetable)
         self.infection_prob_per_contact = infection_prob_per_contact
         self.restaurant_multiplier = restaurant_multiplier
         self.visit_prob_per_person = visit_prob_per_person
         self.meal_random = meal_random
         self.meal_distanced = meal_distanced
-        self.timetable = timetable
         self.dinner_percentage = dinner_percentage
         self.split_opening = split_opening
 
@@ -264,7 +279,7 @@ class SchoolModel(Model):
             self.grid.place_agent(a, (self.random.randint(x1, x2), self.random.randint(y1, y2)))
 
         self.datacollector = DataCollector(
-            model_reporters={"Susceptible": s_count, "Infected": i_count, "Recovered": r_count},
+            model_reporters={"Susceptible": s_count, "Infected": i_count, "Recovered": r_count, "Exposed": e_count},
             agent_reporters={}
         )
 

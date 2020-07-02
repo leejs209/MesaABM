@@ -21,14 +21,17 @@ def agent_portrayal(agent):
     elif agent.status == "I":
         portrayal["Color"] = "red"
         portrayal["Layer"] = 0
+    elif agent.status == "E":
+        portrayal["Color"] = "yellow"
+        portrayal["Layer"] = 0
     else:
         portrayal["Color"] = "green"
         portrayal["Layer"] = 0
-
     return portrayal
 
 
 s_chart = ChartModule([{"Label": "Susceptible", "Color": "Blue"},
+                       {"Label": "Exposed", "Color": "Yellow"},
                        {"Label": "Infected", "Color": "Red"},
                        {"Label": "Recovered", "Color": "Green"}
                        ],
