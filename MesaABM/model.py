@@ -50,7 +50,7 @@ class Student(Agent):
         self.dinner = dinner
 
     def meal_normal(self):
-        if len(self.model.order) == 0:
+        if len(self.model.order) != 0:
             t = self.model.order[self.unique_id - 1]
         else:
             t = self.unique_id
@@ -257,11 +257,13 @@ class SchoolModel(Model):
         self.split_opening = split_opening
         self.exposed_infection_prob_per_contact = exposed_infection_prob_per_contact
 
-        self.order = []
+        order = []
         if self.meal_random:
-            self.order = [i for i in range(1, self.N + 1)]
-            shuffle(self.order)
+            for i in range(1, self.N + 1):
+                order.append(i)
+            shuffle(order)
 
+        self.order = order
         # self.grid = ContinuousSpace(width, height, True)
         self.grid = MultiGrid(width, height, False)
         self.schedule = RandomActivation(self)

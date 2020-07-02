@@ -68,9 +68,9 @@ def do_experiment(EXPERIMENT_NAME, split_opening, extra_school, visit_prob_per_p
         model.step()
     asdf = str(datetime.datetime.now().strftime('%m-%d %H-%M-%S'))
     result = model.datacollector.get_model_vars_dataframe()
-    axes = plt.gca()
-    axes.set_xlim([0, 18 00])
+
     result.plot()
+    plt.xlim(0, 2000)
     plt.savefig('result/' + EXPERIMENT_NAME + asdf + '.png', bbox_inches='tight')
     result.to_csv('result/csv/' + EXPERIMENT_NAME + asdf + '.csv')
 
@@ -81,20 +81,22 @@ def do_experiment(EXPERIMENT_NAME, split_opening, extra_school, visit_prob_per_p
     r += str(model.step_no) + ','
 
     end = time.time()
-    print(str(end - start) + '초 소요됨')
+    print(EXPERIMENT_NAME + ": " + str(end - start) + '초 소요됨')
 
     r += str(end - start)
     with open('result/' + EXPERIMENT_NAME + '.csv', 'a') as f:
         f.write(r)
         f.close()
+
+
 # do_experiment(EXPERIMENT_NAME, split_opening, extra_school, visit_prob_per_person, meal_random):
-for _ in range(0):
+for _ in range(10):
     do_experiment('대조군', False, False, 0.1, True)
-for _ in range(3):
+#for _ in range(5):
     do_experiment('가설1번', True, False, 0.1, True)
-for _ in range(3):
+#for _ in range(5):
     do_experiment('가설2번', False, True, 0.1, True)
-for _ in range(3):
+#for _ in range(0):
     do_experiment('가설3번', False, False, 0, True)
-for _ in range(3):
+#for _ in range(0):
     do_experiment('가설4번', False, False, 0.1, False)
