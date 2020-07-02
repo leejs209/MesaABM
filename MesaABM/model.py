@@ -117,16 +117,22 @@ class Student(Agent):
         self.model.grid.move_agent(self, new_pos)
 
     def spread_infection(self, multiplier):
-        # Spread infection only when self is Infected
-        if self.status != "I":
+        # Spread infection only when self is Infected or Exposed
+        if self.status != "I" and self.status != "E":
             return
 
         cellmates = self.model.grid.get_cell_list_contents([self.pos])
         if len(cellmates) <= 1:
             return
-        for x in cellmates:
-            if x.status == "S" and self.random.random() <= self.model.infection_prob_per_contact * multiplier:
-                x.status = "E"
+
+        if self.status == "I":
+            for x in cellmates:
+                if x.status == "S" and self.random.random() <= self.model.infection_prob_per_contact * multiplier:
+                    x.status = "E"
+        else:
+            for x in cellmates:
+                if x.status == "S" and self.random.random() <= self.model.exposed_infection_prob_per_contact * multiplier:
+                    x.status = "E"
 
     def recovery_countdown(self):
         if self.status == "E":
@@ -226,7 +232,8 @@ class Student(Agent):
 
 class SchoolModel(Model):
     def __init__(self, N, N_per_group, width, height, initial_num_infected,
-                 infection_duration, exposed_duration, infection_prob_per_contact, restaurant_multiplier, visit_prob_per_person,
+                 infection_duration, exposed_duration, infection_prob_per_contact, exposed_infection_prob_per_contact,
+                 restaurant_multiplier, visit_prob_per_person,
                  meal_random, meal_distanced, timetable, dinner_percentage, split_opening
                  ):
 
@@ -248,6 +255,7 @@ class SchoolModel(Model):
         self.meal_distanced = meal_distanced
         self.dinner_percentage = dinner_percentage
         self.split_opening = split_opening
+        self.exposed_infection_prob_per_contact = exposed_infection_prob_per_contact
 
         self.order = []
         if self.meal_random:
