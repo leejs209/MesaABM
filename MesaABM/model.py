@@ -231,8 +231,12 @@ class SchoolModel(Model):
                  ):
 
         super().__init__()
-        self.step_no = 0
         self.N = N
+        self.i_count = 0
+        self.e_count = 0
+        self.s_count = self.N
+        self.r_count = 0
+        self.step_no = 0
         self.N_per_group = N_per_group
         self.timetable = timetable
         self.infection_duration = infection_duration * len(self.timetable)
@@ -286,5 +290,10 @@ class SchoolModel(Model):
     def step(self):
         """ Advance the model by one step."""
         self.step_no += 1
+        self.i_count = i_count(self)
+        self.s_count = s_count(self)
+        self.e_count = e_count(self)
+        self.r_count = r_count(self)
+
         self.datacollector.collect(self)
         self.schedule.step()

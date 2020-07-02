@@ -2,6 +2,9 @@ from mesa.visualization.ModularVisualization import ModularServer
 from MesaABM.model import SchoolModel
 from MesaABM.visualization import grid, s_chart
 import asyncio
+from matplotlib import pyplot as plt
+import datetime
+import pandas as pd
 
 timetable_normal = [
     'recess',
@@ -49,6 +52,7 @@ timetable_extra = timetable_normal + [
    ]
 
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
 server = ModularServer(SchoolModel,
                        [grid, s_chart],
                        "School Model",
@@ -57,5 +61,19 @@ server = ModularServer(SchoolModel,
                         "infection_prob_per_contact": 0.2, "restaurant_multiplier": 3, "visit_prob_per_person": 0.1,
                         "meal_random": True, "meal_distanced": False, "dinner_percentage": 0.3,
                         "timetable": timetable_extra, "split_opening": True})
-server.port = 8081
-server.launch()
+
+model = SchoolModel(N=1050, N_per_group=25, width=140, height=61, initial_num_infected=1,
+                    infection_duration=7, exposed_duration=5,
+                    infection_prob_per_contact=0.2, restaurant_multiplier=3, visit_prob_per_person=0.1,
+                    meal_random=True, meal_distanced=False, dinner_percentage=0.3,
+                    timetable=timetable_extra, split_opening=True)
+
+model.step()
+while model.i_count != 0 or model.e_count != 0:
+    model.step()
+result = model.datacollector.get_model_vars_dataframe()
+asdf = str(datetime.datetime.now().strftime('%m-%d %H-%M-%S'))
+result.to_csv(asdf + '.csv')
+plt.savefig(asdf + '.png', bbox_inches='tight')
+#server.port = 8081
+#server.launch()
