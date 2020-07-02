@@ -1,6 +1,7 @@
 from mesa.visualization.ModularVisualization import ModularServer
 from MesaABM.model import SchoolModel
 from MesaABM.visualization import grid, s_chart
+import asyncio
 
 timetable_normal = [
     'recess',
@@ -47,6 +48,7 @@ timetable_extra = timetable_normal + [
     'recess_cont'
    ]
 
+asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 server = ModularServer(SchoolModel,
                        [grid, s_chart],
                        "School Model",
