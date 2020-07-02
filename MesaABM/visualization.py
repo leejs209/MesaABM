@@ -1,5 +1,6 @@
 from mesa.visualization.modules import CanvasGrid
 from mesa.visualization.modules import ChartModule
+from MesaABM.model import SchoolModel
 
 
 def agent_portrayal(agent):
@@ -16,18 +17,17 @@ def agent_portrayal(agent):
 
     if agent.status == "S":
         portrayal["Color"] = "blue"
-        portrayal["Layer"] = agent.unique_id
+        portrayal["Layer"] = 0
     elif agent.status == "I":
         portrayal["Color"] = "red"
-        portrayal["Layer"] = agent.unique_id
+        portrayal["Layer"] = 0
     else:
         portrayal["Color"] = "green"
-        portrayal["Layer"] = agent.unique_id
+        portrayal["Layer"] = 0
 
     return portrayal
 
 
-# TODO: add charts for showing graph of the number of each status of agents.
 s_chart = ChartModule([{"Label": "Susceptible", "Color": "Blue"},
                        {"Label": "Infected", "Color": "Red"},
                        {"Label": "Recovered", "Color": "Green"}
