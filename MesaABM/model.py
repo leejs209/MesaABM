@@ -35,6 +35,7 @@ class Student(Agent):
     def __init__(self, unique_id, group_no, status, infection_duration, model, dinner):
         super().__init__(unique_id, model)
         self.group_no = group_no
+        self.reside_no = group_no
         self.status = status
         self.infected_timeleft = infection_duration
         self.infection_duration = infection_duration
@@ -128,72 +129,84 @@ class Student(Agent):
             self.status = "R"
             self.infected_timeleft = self.infection_duration
 
+
+
     def step(self):
         #step_no는 1, 2, ...
-        if self.model.split_opening and (((self.model.step_no - 1) // len(self.model.timetable)) // 7) % 2 == 0:
+        #홀수반 = 1학년, 짝수반 = 2학년
+        if self.model.split_opening and (((self.model.step_no - 1) // len(self.model.timetable)) // 5) % 2 == 0: #홀수주
             open_schedule = 23
-        elif self.model.split_opening and (((self.model.step_no - 1) // len(self.model.timetable)) // 7) % 2 == 1:
+        elif self.model.split_opening and (((self.model.step_no - 1) // len(self.model.timetable)) // 5) % 2 == 1: #짝수주
             open_schedule = 13
         else:
-            open_schedule = 123
-
+            open_schedule = 123 #격주등교 안함
+        inschool = open_schedule == 123 or (open_schedule == 13 and not self.group_no in range(2,29,2)) or (open_schedule == 23 and not self.group_no in range(1,29,2))
         m = self.model.timetable[(self.model.step_no - 1)% len(self.model.timetable)]
-        if False:
-            if self.model.split_opening and 1 <= self.group_no <= 14 and open_schedule == 23:
-                self.model.grid.move_agent(self, (139, 60))
-            elif self.model.split_opening and 15 <= self.group_no <= 28 and open_schedule == 13:
-                self.model.grid.move_agent(self, (139, 60))
-        else:
-            if self.model.split_opening and 1 <= self.group_no <= 28 and self.group_no % 2 == 0 and open_schedule == 13:
-                self.model.grid.move_agent(self, (139, 60))
-            elif self.model.split_opening and 1 <= self.group_no <= 28 and self.group_no % 2 == 1 and open_schedule == 23:
-                self.model.grid.move_agent(self, (139, 60))
-            else:
-                if m == 'meal':
-                    if self.model.meal_distanced == True:
-                        self.meal_distanced()
-                        self.spread_infection(self.model.restaurant_multiplier)
-                    else:
-                        self.meal_normal()
-                        self.spread_infection(self.model.restaurant_multiplier)
-                elif m == 'meal_cont':
-                    self.spread_infection(self.model.restaurant_multiplier)
-                elif m == 'recess':
-                    if self.random.random() < self.model.visit_prob_per_person:
-                        if False:
-                            if open_schedule == 13:
-                                self.move_to_group([self.random.randint(1,14),self.random.randint(29,42)][self.random.randint(0,1)])
-                            elif open_schedule == 23:
-                                self.move_to_group(self.random.randint(15, 42))
-                            elif open_schedule == 123:
-                                self.move_to_group(self.random.randint(1, 42))
-                        else:
-                            #TODO: only move to one's own grade instead of any grade
-                            if open_schedule == 13:
-                                self.move_to_group([self.random.randrange(1,29,2),self.random.randint(29,42)][self.random.randint(0,1)])
-                            elif open_schedule == 23:
-                                self.move_to_group([self.random.randrange(2,29,2),self.random.randint(29,42)][self.random.randint(0,1)])
-                            elif open_schedule == 123:
-                                self.move_to_group(self.random.randint(1, 42))
-                    else:
-                        self.move_to_group(self.group_no)
-                    self.spread_infection(1)
-                elif m == 'recess_cont':
-                    self.move_within_bound(self.group_no)
-                    self.spread_infection(1)
-                elif m == 'dinner' and self.dinner == True:
-                    if self.model.meal_distanced == True:
-                        self.meal_distanced()
-                        self.spread_infection(self.model.restaurant_multiplier)
-                    else:
-                        self.meal_normal()
-                        self.spread_infection(self.model.restaurant_multiplier)
-                elif m == 'dinner' and self.dinner == False:
-                    self.model.grid.move_agent(self, (139,60))
-                elif m == 'dinner_cont':
-                    if self.dinner == True:
-                        self.spread_infection(self.model.restaurant_multiplier)
 
+        #격주등교시 미등교 학년 비활성
+        if self.model.split_opening and self.group_no in range(2,29,2) and open_schedule == 13:
+            self.model.grid.move_agent(self, (139, 60))
+        elif self.model.split_opening and self.group_no in range(1,29,2) and open_schedule == 23:
+            self.model.grid.move_agent(self, (139, 60))
+        #등교하는 경우
+        elif inschool:
+            if m == 'meal':
+                if self.model.meal_distanced == True:
+                    self.meal_distanced()
+                    self.spread_infection(self.model.restaurant_multiplier)
+                else:
+                    self.meal_normal()
+                    self.spread_infection(self.model.restaurant_multiplier)
+
+            elif m == 'meal_cont':
+                self.spread_infection(self.model.restaurant_multiplier)
+
+            elif m == 'recess':
+                #교실 간 이동 확률
+                if self.random.random() < self.model.visit_prob_per_person:
+                    if not open_schedule == 23 and self.group_no in range(1,29,2): # 등교한 1학년
+                        self.reside_no = self.random.randrange(1,29,2)
+                        self.move_to_group(self.reside_no)
+                        self.spread_infection(1)
+                    elif not open_schedule == 13 and self.group_no in range(2,29,2): # 등교한 2학년
+                        self.reside_no = self.random.randrange(2, 29, 2)
+                        self.move_to_group(self.reside_no)
+                        self.spread_infection(1)
+                    elif self.group_no in range(29,43): # 3학년
+                        self.reside_no = self.random.randint(29, 42)
+                        self.move_to_group(self.reside_no)
+                        self.spread_infection(1)
+                    else: #미등교자 무시
+                        pass
+                else:
+                    #이동 안하면 자기 반으로 배치
+                    self.reside_no = self.group_no
+                    self.move_to_group(self.group_no)
+                    self.spread_infection(1)
+
+            elif m == 'recess_cont':
+                self.move_within_bound(self.reside_no)
+                if inschool:
+                    self.spread_infection(1)
+
+            elif m == 'dinner' and self.dinner == True:
+                if self.model.meal_distanced == True and inschool:
+                    self.meal_distanced()
+                    self.spread_infection(self.model.restaurant_multiplier)
+                elif inschool:
+                    self.meal_normal()
+                    self.spread_infection(self.model.restaurant_multiplier)
+                else:
+                    pass
+
+            elif m == 'dinner' and self.dinner == False:
+                self.model.grid.move_agent(self, (139,60))
+
+            elif m == 'dinner_cont':
+                if self.dinner == True and inschool:
+                    self.spread_infection(self.model.restaurant_multiplier)
+        else:
+            print("This error shouldn't happen.")
         self.recovery_countdown()
 
 
