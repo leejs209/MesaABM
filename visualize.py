@@ -49,7 +49,6 @@ timetable_extra = timetable_normal + [
    ]
 
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-
 server = ModularServer(SchoolModel,
                        [grid, s_chart],
                        "School Model",

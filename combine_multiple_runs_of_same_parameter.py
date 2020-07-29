@@ -12,17 +12,6 @@ all_files = glob.glob(os.path.join(path, "*.csv"))
 
 df_from_each_file = [pd.read_csv(f) for f in all_files]
 
-# cnt = 100000
-# for x in df_from_each_file:
-#     a = len(x.index)
-#     if a < cnt:
-#         cnt = len(x.index)
-#
-# result = []
-# for x in df_from_each_file:
-#     result.append(x.iloc)
-#
-# final = pd.DataFrame(data=, index=range(cnt))
 t = 0
 final = df_from_each_file[0]
 final.drop(["Infected", 'Recovered', 'Exposed'], axis=1, inplace=True)
