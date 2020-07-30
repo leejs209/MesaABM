@@ -215,13 +215,13 @@ def combine_same_hypothesis(EXPERIMENT_NAME):
     plt.savefig(RESULT_DIR + 'total/' + EXPERIMENT_NAME + '_EIR_combined_xlim.png', bbox_inches='tight')
     plt.close()
 
-# for t in range(30):
-#     print(str(t+1) + "번쨰 실험")
-#     do_experiment('대조군', False, False, 0.1, True)
-#     do_experiment('가설1번', True, False, 0.1, True)
-#     do_experiment('가설2번', False, True, 0.1, True)
-#     do_experiment('가설3번', False, False, 0, True)
-#     do_experiment('가설4번', False, False, 0.1, False)
+for t in range(30):
+    print(str(t+1) + "번쨰 실험")
+    do_experiment('대조군', False, False, 0.1, True)
+    do_experiment('가설1번', True, False, 0.1, True)
+    do_experiment('가설2번', False, True, 0.1, True)
+    do_experiment('가설3번', False, False, 0, True)
+    do_experiment('가설4번', False, False, 0.1, False)
 
 average_IER('대조군', 25)
 average_IER('가설1번', 25)
