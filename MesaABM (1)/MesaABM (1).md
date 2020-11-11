@@ -1,20 +1,17 @@
-# Python 및 행위자 기반 모형을 통한 교내 사회적 거리두기 정책의 효과 분석
-
+# 소스 코드 
+Python 및 행위자 기반 모형을 통한 교내 사회적 거리두기 정책의 효과 분석
 
 ##  1.  준비
 
 필요한 패키지 설치, 관련 설정 및 import
 
-
 ```python
 !pip install mesa
 ```
 
-
 ```python
 %matplotlib inline
 ```
-
 
 ```python
 from mesa import Agent, Model
@@ -663,49 +660,6 @@ combine_same_hypothesis('3번')
 combine_same_hypothesis('4번')
 ```
 
-
-    
-![png](output_42_0.png)
-    
-
-
-
-    
-![png](output_42_1.png)
-    
-
-
-
-    
-![png](output_42_2.png)
-    
-
-
-
-    
-![png](output_42_3.png)
-    
-
-
-
-    
-![png](output_42_4.png)
-    
-
-
-
-    
-![png](output_42_5.png)
-    
-
-
-
-    
-![png](output_42_6.png)
-    
-
-
-
 ```python
 average_IER('0.1', 37)  #  37은 하루가 37스텝임을 의미
 average_IER('0.3', 37)  #  37은 하루가 37스텝임을 의미
@@ -720,10 +674,4 @@ average_IER('4번', 37)  #  37은 하루가 37스텝임을 의미
 ```python
 combine_averages()
 ```
-
-
-
-    
-![png](output_44_1.png)
-    
 
