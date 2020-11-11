@@ -721,43 +721,6 @@ average_IER('4번', 37)  #  37은 하루가 37스텝임을 의미
 combine_averages()
 ```
 
-    /usr/local/lib/python3.6/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 4355 missing from current font.
-      font.set_text(s, 0.0, flags=flags)
-    /usr/local/lib/python3.6/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 4450 missing from current font.
-      font.set_text(s, 0.0, flags=flags)
-    /usr/local/lib/python3.6/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 4364 missing from current font.
-      font.set_text(s, 0.0, flags=flags)
-    /usr/local/lib/python3.6/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 4457 missing from current font.
-      font.set_text(s, 0.0, flags=flags)
-    /usr/local/lib/python3.6/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 4352 missing from current font.
-      font.set_text(s, 0.0, flags=flags)
-    /usr/local/lib/python3.6/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 4462 missing from current font.
-      font.set_text(s, 0.0, flags=flags)
-    /usr/local/lib/python3.6/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 4523 missing from current font.
-      font.set_text(s, 0.0, flags=flags)
-    /usr/local/lib/python3.6/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 4359 missing from current font.
-      font.set_text(s, 0.0, flags=flags)
-    /usr/local/lib/python3.6/dist-packages/matplotlib/backends/backend_agg.py:214: RuntimeWarning: Glyph 4453 missing from current font.
-      font.set_text(s, 0.0, flags=flags)
-    /usr/local/lib/python3.6/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 4355 missing from current font.
-      font.set_text(s, 0, flags=flags)
-    /usr/local/lib/python3.6/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 4450 missing from current font.
-      font.set_text(s, 0, flags=flags)
-    /usr/local/lib/python3.6/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 4364 missing from current font.
-      font.set_text(s, 0, flags=flags)
-    /usr/local/lib/python3.6/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 4457 missing from current font.
-      font.set_text(s, 0, flags=flags)
-    /usr/local/lib/python3.6/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 4352 missing from current font.
-      font.set_text(s, 0, flags=flags)
-    /usr/local/lib/python3.6/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 4462 missing from current font.
-      font.set_text(s, 0, flags=flags)
-    /usr/local/lib/python3.6/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 4523 missing from current font.
-      font.set_text(s, 0, flags=flags)
-    /usr/local/lib/python3.6/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 4359 missing from current font.
-      font.set_text(s, 0, flags=flags)
-    /usr/local/lib/python3.6/dist-packages/matplotlib/backends/backend_agg.py:183: RuntimeWarning: Glyph 4453 missing from current font.
-      font.set_text(s, 0, flags=flags)
-
 
 
     
